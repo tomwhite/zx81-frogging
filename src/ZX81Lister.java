@@ -7,11 +7,12 @@ import java.util.Map;
 
 /**
  * Created by tom on 25/03/2016.
+ * This is basically PFileUtils
  */
 public class ZX81Lister {
     public static void main(String[] args) throws Exception {
-        //File f = new File("/Users/tom/projects-workspace/zx81/white-tape/frogging/frogging-normalized.1.program1.p");
-        File f = new File("/Users/tom/projects-workspace/zx81/randompatterns.p");
+        File f = new File("/Users/tom/Downloads/Salvo.p/salvo.p");
+        //File f = new File("/Users/tom/projects-workspace/zx81/randompatterns.p");
         FileInputStream fis = new FileInputStream(f);
         byte[] fileBytes = new byte[fis.available()];
         fis.read(fileBytes);
@@ -23,10 +24,14 @@ public class ZX81Lister {
 
         System.out.println("=== System variables");
         StringBuffer var = new StringBuffer();
-        ZX81SysVars.dumpSystemVariables(fileBytes, 0, 16393, var);
+        ZX81SysVars.dumpSystemVariables(fileBytes, 0, ZX81SysVars.SAVE_START, var);
         System.out.println(var);
 
         System.out.println("=== Program");
+        System.out.println(fileBytes[116]);
+        System.out.println(fileBytes[117]); // first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?
+        System.out.println(fileBytes[118]);
+        System.out.println(fileBytes[119]);
         Map<Integer, byte[]> programLines = ZX81Basic.getProgramLines(fileBytes);
         for (Map.Entry<Integer, byte[]> line : programLines.entrySet()) {
             int lineNumber = line.getKey();
