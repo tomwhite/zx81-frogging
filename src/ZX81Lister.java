@@ -4,6 +4,7 @@ import sinclair.basic.ZX81SysVars;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by tom on 25/03/2016.
@@ -11,8 +12,8 @@ import java.util.Map;
  */
 public class ZX81Lister {
     public static void main(String[] args) throws Exception {
-        File f = new File("/Users/tom/Downloads/Salvo.p/salvo.p");
-        //File f = new File("/Users/tom/projects-workspace/zx81/randompatterns.p");
+        //File f = new File("/Users/tom/projects-workspace/zx81/white-tape/frogging/frogging-normalized.1.program1.p");
+        File f = new File("/Users/tom/projects-workspace/zx81/randompatterns.p");
         FileInputStream fis = new FileInputStream(f);
         byte[] fileBytes = new byte[fis.available()];
         fis.read(fileBytes);
@@ -26,6 +27,13 @@ public class ZX81Lister {
         StringBuffer var = new StringBuffer();
         ZX81SysVars.dumpSystemVariables(fileBytes, 0, ZX81SysVars.SAVE_START, var);
         System.out.println(var);
+
+        System.out.println("=== Newlines (16476 is end of PRBUF, then program block, then D_FILE block)");
+        for (int i = 0; i < fileBytes.length; i++) {
+            if ((fileBytes[i] & 255) == 118) {
+                System.out.println(ZX81SysVars.SAVE_START + i);
+            }
+        }
 
         System.out.println("=== Program");
         System.out.println(fileBytes[116]);

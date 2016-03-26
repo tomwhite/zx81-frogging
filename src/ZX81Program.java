@@ -49,7 +49,7 @@ public class ZX81Program {
                         ((bs.get(i + 7) ? 0 : 1) << 0);
 //                System.out.println(b);
                 if (b == 118) {
-                    System.out.println("NL!");
+                    System.out.println("NL! at " + i + "(" + i/8 + "," + i%8 + ")");
                 }
             }
         }
