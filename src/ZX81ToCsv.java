@@ -25,7 +25,14 @@ public class ZX81ToCsv {
             String[] lines = var.toString().split("\n");
             for (String field : lines) {
                 System.out.print(",");
-                System.out.print(field.split("=")[1].trim());
+                String[] vals = field.split("=");
+                if (vals[0].trim().equals("PRBUFF")) {
+                    System.out.print(prbuff(fileBytes));
+                } else if (vals[0].trim().equals("MEMBOT")) {
+                    System.out.print(membot(fileBytes));
+                } else {
+                    System.out.print(field.split("=")[1].trim());
+                }
             }
 
             Map<Integer, byte[]> programLines = ZX81Basic.getProgramLines(fileBytes);
@@ -36,6 +43,24 @@ public class ZX81ToCsv {
 
             System.out.println();
         }
+    }
+
+    private static String prbuff(byte[] memory) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 33; i++) {
+            int variableValue = ZX81SysVars.getVariableValue(memory, 0, ZX81SysVars.SAVE_START, ZX81SysVars.PRBUFF + i, 1);
+            sb.append(String.format("%02x ", variableValue));
+        }
+        return sb.toString();
+    }
+
+    private static String membot(byte[] memory) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 30; i++) {
+            int variableValue = ZX81SysVars.getVariableValue(memory, 0, ZX81SysVars.SAVE_START, ZX81SysVars.MEMBOT + i, 1);
+            sb.append(String.format("%02x ", variableValue));
+        }
+        return sb.toString();
     }
 
     private static float meanLineLength(Map<Integer, byte[]> programLines) {
