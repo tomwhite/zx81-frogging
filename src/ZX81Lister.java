@@ -39,6 +39,9 @@ public class ZX81Lister {
             }
         }
 
+        System.out.println("=== Newlines at any bit offset");
+        BitUtils.find(fileBytes, (byte) 118);
+
         System.out.println("=== Program");
         System.out.println(fileBytes[116]);
         System.out.println(fileBytes[117]); // first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?

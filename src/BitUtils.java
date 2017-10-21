@@ -44,4 +44,32 @@ public class BitUtils {
 
         return memoryCopy;
     }
+
+    public static void find(byte[] memory, byte search) {
+        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
+        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
+
+        int b = 0;
+        int pos = 0;
+        while (true) {
+            try {
+                boolean bit = bitInput.readBoolean();
+                b = (b << 1) & 0xFF;
+                if (bit) {
+                    b = b | 1;
+                }
+                if (((byte) b) == search) {
+                    System.out.println("Found at bit pos " + pos);
+                    System.out.println("Found at byte pos " + (pos / 8));
+                }
+                pos++;
+            } catch (IllegalStateException e) {
+                // EOF
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
 }
