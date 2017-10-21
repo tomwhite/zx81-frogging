@@ -1,4 +1,5 @@
 import com.github.jinahya.bit.io.*;
+import sinclair.basic.ZX81SysVars;
 
 import java.io.IOException;
 
@@ -54,15 +55,15 @@ public class BitUtils {
         while (true) {
             try {
                 boolean bit = bitInput.readBoolean();
+                pos++;
                 b = (b << 1) & 0xFF;
                 if (bit) {
                     b = b | 1;
                 }
                 if (((byte) b) == search) {
-                    System.out.println("Found at bit pos " + pos);
-                    System.out.println("Found at byte pos " + (pos / 8));
+                    int startPos = pos - 8;
+                    System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
                 }
-                pos++;
             } catch (IllegalStateException e) {
                 // EOF
                 break;
