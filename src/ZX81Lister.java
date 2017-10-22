@@ -42,6 +42,16 @@ public class ZX81Lister {
         System.out.println("=== Newlines at any bit offset");
         BitUtils.find(fileBytes, (byte) 118);
 
+        // insert a bit to make sure line 2 ends with a " to close the print
+        // 5 PRINT AT 16,3;"{6}{H}{F}{F}{6}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}+{T}"
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START + 4 + 38), false);
+        byte[] line2 = new byte[40];
+        System.arraycopy(fileBytes, 16525 - ZX81SysVars.SAVE_START + 4, line2, 0, line2.length);
+        System.out.println("line2 end byte: " + (line2[line2.length - 1] & 255));
+        StringBuffer sb2 = new StringBuffer();
+        ZX81Basic.dumpLine(line2, 5, false, true, true, sb2);
+        System.out.print(sb2.toString());
+
         System.out.println("=== Program");
         System.out.println(fileBytes[116]);
         System.out.println(fileBytes[117]); // first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?
@@ -55,7 +65,7 @@ public class ZX81Lister {
         for (Map.Entry<Integer, byte[]> line : programLines.entrySet()) {
             int lineNumber = line.getKey();
             StringBuffer sb = new StringBuffer();
-            ZX81Basic.dumpLine(line.getValue(), lineNumber, false, sb);
+            ZX81Basic.dumpLine(line.getValue(), lineNumber, false, true, true, sb);
             System.out.print(sb.toString());
         }
 

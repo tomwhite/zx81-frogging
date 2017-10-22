@@ -1,5 +1,6 @@
 import com.github.jinahya.bit.io.*;
 import sinclair.basic.ZX81SysVars;
+import sinclair.basic.ZX81Translate;
 
 import java.io.IOException;
 
@@ -52,6 +53,7 @@ public class BitUtils {
 
         int b = 0;
         int pos = 0;
+        int lastPos = 0;
         while (true) {
             try {
                 boolean bit = bitInput.readBoolean();
@@ -63,7 +65,47 @@ public class BitUtils {
                 if (((byte) b) == search) {
                     int startPos = pos - 8;
                     System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
+                    printLineNumberAndLength(memory, startPos + 8);
+                    if (lastPos != 0) {
+                        System.out.printf("Rough num bytes (inc line number, length): %s\n", (pos - lastPos)/8);
+                    }
+                    lastPos = pos;
                 }
+            } catch (IllegalStateException e) {
+                // EOF
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
+
+    public static void printLineNumberAndLength(byte[] memory, int bitPosition) {
+        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
+        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
+
+        int pos = 0;
+        while (true) {
+            try {
+                if (pos == bitPosition) {
+                    int a = bitInput.read();
+                    int b = bitInput.read();
+                    int c = bitInput.read();
+                    int d = bitInput.read();
+                    int ln = ((a & 255) << 8) + (b & 255);
+                    int ll = (c & 255) + ((d & 255) << 8);
+
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < 8; i++) {
+                        int e = bitInput.read() & 255;
+                        sb.append(ZX81Translate.translateZX81ToASCII(e)).append("(").append(e).append(")").append(" ");
+                    }
+                    System.out.printf("Line: %s, len: %s, content: %s\n", ln, ll, sb);
+
+                }
+                bitInput.readBoolean();
+                pos++;
             } catch (IllegalStateException e) {
                 // EOF
                 break;
