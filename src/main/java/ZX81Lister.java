@@ -42,6 +42,9 @@ public class ZX81Lister {
         System.out.println("=== Newlines at any bit offset");
         BitUtils.find(fileBytes, (byte) 118);
 
+        System.out.println("=== REM at any bit offset");
+        BitUtils.find(fileBytes, (byte) 234);
+
         // insert a bit to make sure line 2 ends with a " to close the print
         // 5 PRINT AT 16,3;"{6}{H}{F}{F}{6}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}+{T}"
         fileBytes = BitUtils.insert(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START + 4 + 38), false);
