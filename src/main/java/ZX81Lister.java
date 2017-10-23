@@ -25,7 +25,7 @@ public class ZX81Lister {
 
         System.out.println("=== File");
         System.out.println("Length: " + fileBytes.length);
-        System.out.println("Program end offset: " + ZX81SysVars.getVariableValueOffset(fileBytes, 16396, 2));
+        System.out.println("Program end offset: " + ZX81SysVars.getVariableValueOffset(fileBytes, ZX81SysVars.D_FILE, 2));
 
         System.out.println("=== System variables");
         StringBuffer var = new StringBuffer();
