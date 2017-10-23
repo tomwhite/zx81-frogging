@@ -12,7 +12,7 @@ import java.util.TreeMap;
  */
 public class ZX81Lister {
     public static void main(String[] args) throws Exception {
-        File f = new File("/Users/tom/projects-workspace/zx81/white-tape/frogging/frogging-normalized.1.program1.p");
+        File f = new File("pfiles/frogging-normalized.1.program1.p");
         //File f = new File("/Users/tom/projects-workspace/zx81/randompatterns.p");
         FileInputStream fis = new FileInputStream(f);
         byte[] fileBytes = new byte[fis.available()];
