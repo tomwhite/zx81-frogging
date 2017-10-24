@@ -45,6 +45,16 @@ public class ZX81Lister {
         System.out.println("=== REM at any bit offset");
         BitUtils.find(fileBytes, (byte) 234);
 
+        // insert 2 bits to make sure line 1 works
+        //
+        byte[] fileBytes1 = BitUtils.insert(fileBytes, 8 * 116, false);
+        fileBytes1 = BitUtils.insert(fileBytes1, 8 * 116, false);
+        byte[] line1 = new byte[12];
+        System.arraycopy(fileBytes1, 116 + 4, line1, 0, line1.length);
+        StringBuffer sb1 = new StringBuffer();
+        ZX81Basic.dumpLine(line1, 1, false, true, true, sb1);
+        System.out.print(sb1.toString());
+
         // insert a bit to make sure line 2 ends with a " to close the print
         // 5 PRINT AT 16,3;"{6}{H}{F}{F}{6}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}+{T}"
         fileBytes = BitUtils.insert(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START + 4 + 38), false);
@@ -56,11 +66,9 @@ public class ZX81Lister {
         System.out.print(sb2.toString());
 
         System.out.println("=== Program");
-        byte[] insert = fileBytes;
         for (int of = 0; of < 16; of++) {
             // finds REM (234) "(11) F(43) R(55) O(52) G(44) G(44) ... for of = 2!
-            insert = BitUtils.insert(insert, 0, false);
-            BitUtils.printLineNumberAndLength(insert, 8 * 116);
+            BitUtils.printLineNumberAndLength(fileBytes, 8 * 116 - of);
         }
         BitUtils.printByteAt(fileBytes, 116);
         BitUtils.printByteAt(fileBytes, 117);// first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?
