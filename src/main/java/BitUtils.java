@@ -94,16 +94,16 @@ public class BitUtils {
         while (true) {
             try {
                 if (pos == bitPosition) {
-                    int a = bitInput.read();
-                    int b = bitInput.read();
-                    int c = bitInput.read();
-                    int d = bitInput.read();
+                    int a = bitInput.readInt(true, 8);
+                    int b = bitInput.readInt(true, 8);
+                    int c = bitInput.readInt(true, 8);
+                    int d = bitInput.readInt(true, 8);
                     int ln = ((a & 255) << 8) + (b & 255);
                     int ll = (c & 255) + ((d & 255) << 8);
 
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < 8; i++) {
-                        int e = bitInput.read() & 255;
+                        int e = bitInput.readInt(true, 8) & 255;
                         sb.append(ZX81Translate.translateZX81ToASCII(e)).append("(").append(e).append(")").append(" ");
                     }
                     System.out.printf("Line: %s, len: %s, content: %s\n", ln, ll, sb);
