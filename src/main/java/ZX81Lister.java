@@ -39,16 +39,10 @@ public class ZX81Lister {
             }
         }
 
-        System.out.println("=== Newlines at any bit offset");
-        BitUtils.find(fileBytes, (byte) 118);
-
-        System.out.println("=== REM at any bit offset");
-        BitUtils.find(fileBytes, (byte) 234);
-
-        // insert 2 bits to make sure line 1 works
+        // insert 2 bits to make sure line 1 works. Line length is still wrong
         //
         byte[] fileBytes1 = BitUtils.insert(fileBytes, 8 * 116, false);
-        fileBytes1 = BitUtils.insert(fileBytes1, 8 * 116, false);
+        fileBytes1 = BitUtils.insert(fileBytes1, 8 * 118, false);
         byte[] line1 = new byte[12];
         System.arraycopy(fileBytes1, 116 + 4, line1, 0, line1.length);
         StringBuffer sb1 = new StringBuffer();
@@ -65,11 +59,38 @@ public class ZX81Lister {
         ZX81Basic.dumpLine(line2, 5, false, true, true, sb2);
         System.out.print(sb2.toString());
 
+        // insert 1 bits for line 5 (PRINT AT H,V) ?
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START + 4 + 6), false);
+
+        // set 1 bits for NL on line 6 (LET M=) ? Converts 74_GRAPHICS to NEWLINE
+        fileBytes = BitUtils.set(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START + 4
+            + 7) + 6, true);
+
+        System.out.println("=== Program reconstruction");
+        BitUtils.printLine(fileBytes1, 8 * 116, 12);
+        BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);
+        BitUtils.printLine(fileBytes, 8 * (16568 - ZX81SysVars.SAVE_START) + 8, 12);
+        BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);
+        BitUtils.printLine(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START), 10);
+        BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 8);
+        // BitUtils.printLine(fileBytes, 8 * (16626 - ZX81SysVars.SAVE_START), 12);
+        BitUtils.printLine(fileBytes, 8 * (16642 - ZX81SysVars.SAVE_START) + 7, 13);
+        //
+        BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);
+        BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START) + 1, 10);
+        BitUtils.printLine(fileBytes, 8 * (16722 - ZX81SysVars.SAVE_START) + 1, 3);
+
+        System.out.println("=== Newlines at any bit offset");
+        BitUtils.findNewlines(fileBytes, 16509 - ZX81SysVars.SAVE_START);
+
+        System.out.println("=== REM at any bit offset");
+        BitUtils.find(fileBytes, (byte) 234);
+
         System.out.println("=== Program");
-        for (int of = 0; of < 16; of++) {
-            // finds REM (234) "(11) F(43) R(55) O(52) G(44) G(44) ... for of = 2!
-            BitUtils.printLineNumberAndLength(fileBytes, 8 * 116 - of);
-        }
+//        for (int of = 0; of < 16; of++) {
+//            // finds REM (234) "(11) F(43) R(55) O(52) G(44) G(44) ... for of = 2!
+//            BitUtils.printLineNumberAndLength(fileBytes, 8 * 116 - of);
+//        }
         BitUtils.printByteAt(fileBytes, 116);
         BitUtils.printByteAt(fileBytes, 117);// first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?
         BitUtils.printByteAt(fileBytes, 118);
@@ -86,13 +107,13 @@ public class ZX81Lister {
             System.out.print(sb.toString());
         }
 
-        System.out.println("=== Variables");
-        Map variables = ZX81Basic.getVariables(fileBytes);
-        System.out.println(variables);
-
-        System.out.println("=== Variable memory");
-        Map variableMemory = ZX81Basic.getVariableMemory(fileBytes);
-        System.out.println(variableMemory);
+//        System.out.println("=== Variables");
+//        Map variables = ZX81Basic.getVariables(fileBytes);
+//        System.out.println(variables);
+//
+//        System.out.println("=== Variable memory");
+//        Map variableMemory = ZX81Basic.getVariableMemory(fileBytes);
+//        System.out.println(variableMemory);
 
     }
 }

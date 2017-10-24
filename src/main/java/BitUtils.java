@@ -9,6 +9,45 @@ import java.io.IOException;
  */
 public class BitUtils {
 
+    public static byte[] set(byte[] memory, int bitPosition, boolean value) {
+        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
+        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
+
+        byte[] memoryCopy = new byte[memory.length + 1];
+        ArrayByteOutput arrayByteOutput = new ArrayByteOutput(memoryCopy, 0, memoryCopy.length);
+        DefaultBitOutput<ByteOutput> bitOutput = new DefaultBitOutput<ByteOutput>(arrayByteOutput);
+
+        int pos = 0;
+        while (true) {
+            try {
+                boolean b = bitInput.readBoolean();
+                if (pos == bitPosition) { // insert
+                    //System.out.println(">"  + value);
+                    bitOutput.writeBoolean(value);
+                } else {
+                    //System.out.println(b);
+                    bitOutput.writeBoolean(b);
+                }
+                pos++;
+            } catch (IllegalStateException e) {
+                // EOF
+                for (int i = 0; i < 7; i++) {
+                    try {
+                        bitOutput.writeBoolean(false);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+
+        return memoryCopy;
+    }
+
     public static byte[] insert(byte[] memory, int bitPosition, boolean value) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
@@ -81,6 +120,45 @@ public class BitUtils {
         }
     }
 
+    public static void findNewlines(byte[] memory, int start) {
+        byte search = 118;
+        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
+        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
+
+        int b = 0;
+        int pos = 0;
+        int lastPos = 0;
+        while (true) {
+            try {
+                boolean bit = bitInput.readBoolean();
+                pos++;
+                if (pos < start) {
+                    continue;
+                }
+                b = (b << 1) & 0xFF;
+                if (bit) {
+                    b = b | 1;
+                }
+                if (((byte) b) == search) {
+                    int startPos = pos - 8;
+                    System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
+                    printLineNumberAndLength(memory, startPos + 8);
+                    if (lastPos != 0) {
+                        System.out.printf("Rough num bytes (inc line number, length): %s\n", (pos - lastPos)/8);
+                    }
+                    lastPos = pos;
+                }
+            } catch (IllegalStateException e) {
+                // EOF
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
+
+
     public static void printByteAt(byte[] memory, int offset) {
         int v = memory[offset] & 255;
         System.out.printf("%s (%s)\n", Integer.toBinaryString(v), v);
@@ -108,6 +186,44 @@ public class BitUtils {
                     }
                     System.out.printf("Line: %s, len: %s, content: %s\n", ln, ll, sb);
 
+                }
+                bitInput.readBoolean();
+                pos++;
+            } catch (IllegalStateException e) {
+                // EOF
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
+
+    public static void printLine(byte[] memory, int bitPosition, int lineLength) {
+        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
+        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
+
+        int pos = 0;
+        while (true) {
+            try {
+                if (pos == bitPosition) {
+                    int a = bitInput.readInt(true, 8);
+                    int b = bitInput.readInt(true, 8);
+                    int c = bitInput.readInt(true, 8);
+                    int d = bitInput.readInt(true, 8);
+                    int ln = ((a & 255) << 8) + (b & 255);
+                    int ll = (c & 255) + ((d & 255) << 8);
+
+                    StringBuilder sb = new StringBuilder();
+                    StringBuilder debug = new StringBuilder();
+                    for (int i = 0; i < lineLength; i++) {
+                        int e = bitInput.readInt(true, 8) & 255;
+                        sb.append(ZX81Translate.translateZX81ToASCII(e));
+                        debug.append(ZX81Translate.translateZX81ToASCII(e)).append("(").append(e).append(")").append(" ");
+                    }
+                    System.out.printf("%s %s\n", ln, sb);
+                    System.out.printf("\tDebug: encoded line len: %s, requested line " +
+                        "len: %s, content: %s\n", ll, lineLength, debug);
                 }
                 bitInput.readBoolean();
                 pos++;
