@@ -79,6 +79,8 @@ public class ZX81Lister {
         BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);
         BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START) + 1, 10);
         BitUtils.printLine(fileBytes, 8 * (16722 - ZX81SysVars.SAVE_START) + 1, 3);
+        //
+        BitUtils.printLine(fileBytes, 8 * (16842 - ZX81SysVars.SAVE_START) + 7, 10);
 
         System.out.println("=== Newlines at any bit offset");
         BitUtils.findNewlines(fileBytes, 16509 - ZX81SysVars.SAVE_START);
