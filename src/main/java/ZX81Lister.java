@@ -56,10 +56,16 @@ public class ZX81Lister {
         System.out.print(sb2.toString());
 
         System.out.println("=== Program");
-        System.out.println(fileBytes[116]);
-        System.out.println(fileBytes[117]); // first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?
-        System.out.println(fileBytes[118]);
-        System.out.println(fileBytes[119]);
+        byte[] insert = fileBytes;
+        for (int of = 0; of < 16; of++) {
+            // finds REM (234) "(11) F(43) R(55) O(52) G(44) G(44) ... for of = 2!
+            insert = BitUtils.insert(insert, 0, false);
+            BitUtils.printLineNumberAndLength(insert, 8 * 116);
+        }
+        BitUtils.printByteAt(fileBytes, 116);
+        BitUtils.printByteAt(fileBytes, 117);// first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?
+        BitUtils.printByteAt(fileBytes, 118);
+        BitUtils.printByteAt(fileBytes, 119);
         int ln = ((fileBytes[116] & 255) << 8) + (fileBytes[117] & 255);
         int ll = (fileBytes[118] & 255) + ((fileBytes[119] & 255) << 8);
         System.out.println("ln: " + ln);

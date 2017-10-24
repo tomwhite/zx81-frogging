@@ -81,6 +81,11 @@ public class BitUtils {
         }
     }
 
+    public static void printByteAt(byte[] memory, int offset) {
+        int v = memory[offset] & 255;
+        System.out.printf("%s (%s)\n", Integer.toBinaryString(v), v);
+    }
+
     public static void printLineNumberAndLength(byte[] memory, int bitPosition) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
