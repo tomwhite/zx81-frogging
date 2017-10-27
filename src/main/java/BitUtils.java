@@ -104,10 +104,7 @@ public class BitUtils {
                 if (((byte) b) == search) {
                     int startPos = pos - 8;
                     System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
-                    printLineNumberAndLength(memory, startPos + 8);
-                    if (lastPos != 0) {
-                        System.out.printf("Rough num bytes (inc line number, length): %s\n", (pos - lastPos)/8);
-                    }
+                    printByteAtBitPosition(memory, startPos + 8);
                     lastPos = pos;
                 }
             } catch (IllegalStateException e) {
@@ -163,6 +160,30 @@ public class BitUtils {
         int v = memory[offset] & 255;
         System.out.printf("%s (%s)\n", Integer.toBinaryString(v), v);
     }
+
+    public static void printByteAtBitPosition(byte[] memory, int bitPosition) {
+        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
+        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
+
+        int pos = 0;
+        while (true) {
+            try {
+                if (pos == bitPosition) {
+                    int v = bitInput.readInt(true, 8);
+                    System.out.printf("%s (%s)\n", ZX81Translate.translateZX81ToASCII(v), v);
+                }
+                bitInput.readBoolean();
+                pos++;
+            } catch (IllegalStateException e) {
+                // EOF
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
+
 
     public static void printLineNumberAndLength(byte[] memory, int bitPosition) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);

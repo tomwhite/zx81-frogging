@@ -25,7 +25,9 @@ public class ZX81Lister {
 
         System.out.println("=== File");
         System.out.println("Length: " + fileBytes.length);
+        System.out.println("Max address: " + (fileBytes.length + ZX81SysVars.SAVE_START));
         System.out.println("Program end offset: " + ZX81SysVars.getVariableValueOffset(fileBytes, ZX81SysVars.D_FILE, 2));
+        System.out.println("Program end address: " + ZX81SysVars.getVariableValue(fileBytes, ZX81SysVars.D_FILE, 2));
 
         System.out.println("=== System variables");
         StringBuffer var = new StringBuffer();
@@ -67,26 +69,35 @@ public class ZX81Lister {
             + 7) + 6, true);
 
         System.out.println("=== Program reconstruction");
-        BitUtils.printLine(fileBytes1, 8 * 116, 12);
+        BitUtils.printLine(fileBytes1, 8 * (16509 - ZX81SysVars.SAVE_START), 12);
         BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);
         BitUtils.printLine(fileBytes, 8 * (16568 - ZX81SysVars.SAVE_START) + 8, 12);
         BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);
         BitUtils.printLine(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START), 10);
         BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 8);
-        // BitUtils.printLine(fileBytes, 8 * (16626 - ZX81SysVars.SAVE_START), 12);
+        BitUtils.printLine(fileBytes, 8 * (16626 - ZX81SysVars.SAVE_START), 12); // nope
         BitUtils.printLine(fileBytes, 8 * (16642 - ZX81SysVars.SAVE_START) + 7, 13);
-        //
+        BitUtils.printLine(fileBytes, 8 * (16659 - ZX81SysVars.SAVE_START) + 7, 5);// nope, probably not a FOR as there is only one NEXT
+        System.out.println("...missing");
         BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);
         BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START) + 1, 10);
         BitUtils.printLine(fileBytes, 8 * (16722 - ZX81SysVars.SAVE_START) + 1, 3);
-        //
+        System.out.println("...lots missing");
         BitUtils.printLine(fileBytes, 8 * (16842 - ZX81SysVars.SAVE_START) + 7, 10);
+        System.out.println("...lots missing");
+        BitUtils.printLine(fileBytes, 8 * (16912 - ZX81SysVars.SAVE_START) + 6, 10);
+        BitUtils.printLine(fileBytes, 8 * (16926 - ZX81SysVars.SAVE_START) + 6, 6);
+        System.out.println("...lots missing");
+        // up to 17013
 
         System.out.println("=== Newlines at any bit offset");
         BitUtils.findNewlines(fileBytes, 16509 - ZX81SysVars.SAVE_START);
 
         System.out.println("=== REM at any bit offset");
         BitUtils.find(fileBytes, (byte) 234);
+
+        System.out.println("=== NEXT at any bit offset");
+        BitUtils.find(fileBytes, (byte) 243);
 
         System.out.println("=== Program");
 //        for (int of = 0; of < 16; of++) {
