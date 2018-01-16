@@ -117,6 +117,36 @@ public class BitUtils {
         }
     }
 
+    public static void findLineNumber(byte[] memory, int lineNumber) {
+        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
+        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
+
+        int b = 0;
+        int pos = 0;
+        while (true) {
+            try {
+                boolean bit = bitInput.readBoolean();
+                pos++;
+                b = (b << 1) & 0xFFFF;
+                if (bit) {
+                    b = b | 1;
+                }
+                int ln = (((b >> 8) & 255) << 8) + (b & 255);
+                if (ln == lineNumber) {
+                    int startPos = pos - 16;
+                    System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
+                    printByteAtBitPosition(memory, startPos + 8);
+                }
+            } catch (IllegalStateException e) {
+                // EOF
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+    }
+
     public static void findNewlines(byte[] memory, int start) {
         byte search = 118;
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);

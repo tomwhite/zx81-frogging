@@ -76,10 +76,10 @@ public class ZX81Lister {
         BitUtils.printLine(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START), 10);        // 30
         BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 20);        // 40
         BitUtils.printLine(fileBytes, 8 * (16642 - ZX81SysVars.SAVE_START) + 7, 13);    // 50
-        BitUtils.printLine(fileBytes, 8 * (16659 - ZX81SysVars.SAVE_START) + 7, 5);// nope, probably not a FOR as there is only one NEXT
+        BitUtils.printLine(fileBytes, 8 * (16659 - ZX81SysVars.SAVE_START) + 7, 5);// nope, probably not a FOR as there is only one NEXT, could be PRINT
         System.out.println("...missing");
-        BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);
-        BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START) + 1, 10);
+        BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);        // 70 (1 bit difference between 6 and 70)
+        BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START) + 1, 10);    // 80
         BitUtils.printLine(fileBytes, 8 * (16722 - ZX81SysVars.SAVE_START) + 1, 3);     // 90
         System.out.println("...lots missing");
         BitUtils.printLine(fileBytes, 8 * (16842 - ZX81SysVars.SAVE_START) + 7, 10);
@@ -97,6 +97,12 @@ public class ZX81Lister {
 
         System.out.println("=== NEXT at any bit offset");
         BitUtils.find(fileBytes, (byte) 243);
+
+        System.out.println("=== F at any bit offset");
+        BitUtils.find(fileBytes, (byte) 43);
+
+        System.out.println("=== Line number 70 at any bit offset");
+        BitUtils.findLineNumber(fileBytes, 70);
 
         System.out.println("=== Program");
 //        for (int of = 0; of < 16; of++) {

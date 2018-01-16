@@ -3,9 +3,9 @@
 10 LET H=15
 20 LET V=5
 30 PRINT AT H,V;"\.'"
-
+40 LET M=
 50 FOR I=1 TO M
 
-
+70 LET V=V+1
 80 PRINT AT F,V;"[*]"
 90 NEXT I
