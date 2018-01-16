@@ -81,12 +81,19 @@ public class ZX81Lister {
         BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);        // 70 (1 bit difference between 6 and 70)
         BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START) + 1, 10);    // 80
         BitUtils.printLine(fileBytes, 8 * (16722 - ZX81SysVars.SAVE_START) + 1, 3);     // 90
-        System.out.println("...lots missing");
-        BitUtils.printLine(fileBytes, 8 * (16842 - ZX81SysVars.SAVE_START) + 7, 10);
-        System.out.println("...lots missing");
-        BitUtils.printLine(fileBytes, 8 * (16912 - ZX81SysVars.SAVE_START) + 6, 10);
-        BitUtils.printLine(fileBytes, 8 * (16926 - ZX81SysVars.SAVE_START) + 6, 6);
-        System.out.println("...lots missing");
+        BitUtils.printLine(fileBytes, 8 * (16729 - ZX81SysVars.SAVE_START), 12);        // 100
+        BitUtils.printLine(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START), 21);        // 120
+        BitUtils.printLine(fileBytes, 8 * (16770 - ZX81SysVars.SAVE_START) + 1, 21);    // 130
+        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START) + 1, 20);    // 140
+        System.out.println("...missing");
+        BitUtils.printLine(fileBytes, 8 * (16842 - ZX81SysVars.SAVE_START) + 7, 10);    // 160
+        BitUtils.printLine(fileBytes, 8 * (16856 - ZX81SysVars.SAVE_START) + 7, 13);    // 170
+        BitUtils.printLine(fileBytes, 8 * (16873 - ZX81SysVars.SAVE_START) + 6, 35);    // 180
+        BitUtils.printLine(fileBytes, 8 * (16912 - ZX81SysVars.SAVE_START) + 6, 10);    // 190
+        BitUtils.printLine(fileBytes, 8 * (16926 - ZX81SysVars.SAVE_START) + 6, 6);     // 200
+        System.out.println("...missing");
+        BitUtils.printLine(fileBytes, 8 * (16939 - ZX81SysVars.SAVE_START) + 5, 16);    // 220
+        BitUtils.printLine(fileBytes, 8 * (16968 - ZX81SysVars.SAVE_START) + 4, 8);     // 230
         // up to 17013
 
         System.out.println("=== Newlines at any bit offset");
@@ -101,8 +108,8 @@ public class ZX81Lister {
         System.out.println("=== F at any bit offset");
         BitUtils.find(fileBytes, (byte) 43);
 
-        System.out.println("=== Line number 70 at any bit offset");
-        BitUtils.findLineNumber(fileBytes, 70);
+        System.out.println("=== Line number 230 at any bit offset");
+        BitUtils.findLineNumber(fileBytes, 230);
 
         System.out.println("=== Program");
 //        for (int of = 0; of < 16; of++) {

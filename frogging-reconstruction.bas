@@ -9,3 +9,4 @@
 70 LET V=V+1
 80 PRINT AT F,V;"[*]"
 90 NEXT I
+100 LET A=11

@@ -135,7 +135,7 @@ public class BitUtils {
                 if (ln == lineNumber) {
                     int startPos = pos - 16;
                     System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
-                    printByteAtBitPosition(memory, startPos + 8);
+                    printLineNumberAndLength(memory, startPos);
                 }
             } catch (IllegalStateException e) {
                 // EOF
