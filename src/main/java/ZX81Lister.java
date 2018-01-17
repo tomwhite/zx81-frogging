@@ -69,7 +69,7 @@ public class ZX81Lister {
 //            + 7) + 6, true);
 
         System.out.println("=== Program reconstruction");
-        BitUtils.printLine(fileBytes1, 8 * (16509 - ZX81SysVars.SAVE_START), 12);       // 1
+        BitUtils.printLine(fileBytes1, 8 * (16509 - ZX81SysVars.SAVE_START), 12, "1 REM \"FROGGING\"");
         BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);        // 5
         BitUtils.printLine(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START), 12);        // 10
         BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);        // 20
