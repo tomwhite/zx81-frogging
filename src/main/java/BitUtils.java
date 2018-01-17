@@ -267,14 +267,37 @@ public class BitUtils {
 
                     StringBuilder sb = new StringBuilder();
                     StringBuilder debug = new StringBuilder();
+                    StringBuilder debug0 = new StringBuilder();
+                    StringBuilder debug1 = new StringBuilder();
+                    StringBuilder bitstring = new StringBuilder();
+
+                    debug0.append(String.format("%-16s", ln)).append("  ");
+                    debug1.append(String.format("%-8s", a)).append(" ");
+                    debug1.append(String.format("%-8s", b)).append(" ");
+                    bitstring.append(String.format("%8s", Integer.toBinaryString(a)).replace(' ', '0')).append(" ");
+                    bitstring.append(String.format("%8s", Integer.toBinaryString(b)).replace(' ', '0')).append(" ");
+
+                    debug0.append(String.format("%-16s", ll)).append("  ");
+                    debug1.append(String.format("%-8s", c)).append(" ");
+                    debug1.append(String.format("%-8s", d)).append(" ");
+                    bitstring.append(String.format("%8s", Integer.toBinaryString(c)).replace(' ', '0')).append(" ");
+                    bitstring.append(String.format("%8s", Integer.toBinaryString(d)).replace(' ', '0')).append(" ");
+
                     for (int i = 0; i < lineLength; i++) {
                         int e = bitInput.readInt(true, 8) & 255;
                         sb.append(ZX81Translate.translateZX81ToASCII(e));
                         debug.append(ZX81Translate.translateZX81ToASCII(e)).append("(").append(e).append(")").append(" ");
+                        debug0.append(String.format("%-8s", ZX81Translate.translateZX81ToASCII(e))).append(" ");
+                        debug1.append(String.format("%-8s", e)).append(" ");
+                        bitstring.append(String.format("%8s", Integer.toBinaryString(e)).replace(' ', '0')).append(" ");
                     }
                     System.out.printf("%s %s\n", ln, sb);
                     System.out.printf("\tDebug: encoded line len: %s, requested line " +
                         "len: %s, content: %s\n", ll, lineLength, debug);
+                    System.out.printf("\t%s\n", debug0);
+                    System.out.printf("\t%s\n", debug1);
+                    System.out.printf("\t%s\n", bitstring);
+                    System.out.println();
                 }
                 bitInput.readBoolean();
                 pos++;
