@@ -71,29 +71,29 @@ public class ZX81Lister {
         System.out.println("=== Program reconstruction");
         BitUtils.printLine(fileBytes1, 8 * (16509 - ZX81SysVars.SAVE_START), 12);       // 1
         BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);        // 5
-        BitUtils.printLine(fileBytes, 8 * (16568 - ZX81SysVars.SAVE_START) + 8, 12);    // 10
+        BitUtils.printLine(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START), 12);        // 10
         BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);        // 20
         BitUtils.printLine(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START), 10);        // 30
-        BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 20);        // 40
+        BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 20);        // 40 LET M=INT(... ? number at 16626 (+6 bit offset)
         BitUtils.printLine(fileBytes, 8 * (16642 - ZX81SysVars.SAVE_START) + 7, 13);    // 50
         BitUtils.printLine(fileBytes, 8 * (16659 - ZX81SysVars.SAVE_START) + 7, 5);// nope, probably not a FOR as there is only one NEXT, could be PRINT
         System.out.println("...missing");
-        BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);        // 70 (1 bit difference between 6 and 70)
+        BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);        // 70 (1 bit difference between line number 6 and 70)
         BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START) + 1, 10);    // 80
         BitUtils.printLine(fileBytes, 8 * (16722 - ZX81SysVars.SAVE_START) + 1, 3);     // 90
         BitUtils.printLine(fileBytes, 8 * (16729 - ZX81SysVars.SAVE_START), 12);        // 100
-        BitUtils.printLine(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START), 21);        // 120
+        BitUtils.printLine(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START), 21);        // 120 FOR I=1 TO
         BitUtils.printLine(fileBytes, 8 * (16770 - ZX81SysVars.SAVE_START) + 1, 21);    // 130
-        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START) + 1, 20);    // 140
+        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START) + 1, 20);    // 140 IF ... THEN GOTO ...
         System.out.println("...missing");
         BitUtils.printLine(fileBytes, 8 * (16842 - ZX81SysVars.SAVE_START) + 7, 10);    // 160
-        BitUtils.printLine(fileBytes, 8 * (16856 - ZX81SysVars.SAVE_START) + 7, 13);    // 170
-        BitUtils.printLine(fileBytes, 8 * (16873 - ZX81SysVars.SAVE_START) + 6, 35);    // 180
+        BitUtils.printLine(fileBytes, 8 * (16856 - ZX81SysVars.SAVE_START) + 7, 13);    // 170 LET H=H+1
+        BitUtils.printLine(fileBytes, 8 * (16873 - ZX81SysVars.SAVE_START) + 6, 35);    // 180 IF ... THEN GOTO ...
         BitUtils.printLine(fileBytes, 8 * (16912 - ZX81SysVars.SAVE_START) + 6, 10);    // 190
-        BitUtils.printLine(fileBytes, 8 * (16926 - ZX81SysVars.SAVE_START) + 6, 6);     // 200
-        System.out.println("...missing");
+        BitUtils.printLine(fileBytes, 8 * (16926 - ZX81SysVars.SAVE_START) + 6, 3);     // 200 NEXT I ?
+        BitUtils.printLine(fileBytes, 8 * (16933 - ZX81SysVars.SAVE_START) + 5, 2);     // 210 (similar to 146)
         BitUtils.printLine(fileBytes, 8 * (16939 - ZX81SysVars.SAVE_START) + 5, 16);    // 220
-        BitUtils.printLine(fileBytes, 8 * (16968 - ZX81SysVars.SAVE_START) + 4, 8);     // 230
+        BitUtils.printLine(fileBytes, 8 * (16968 - ZX81SysVars.SAVE_START) + 4, 10);     // 230
         // up to 17013
 
         System.out.println("=== Newlines at any bit offset");
@@ -105,32 +105,45 @@ public class ZX81Lister {
         System.out.println("=== NEXT at any bit offset");
         BitUtils.find(fileBytes, (byte) 243);
 
-        System.out.println("=== F at any bit offset");
-        BitUtils.find(fileBytes, (byte) 43);
+        System.out.println("=== THEN at any bit offset");
+        BitUtils.find(fileBytes, (byte) 222);
 
-        System.out.println("=== Line number 230 at any bit offset");
-        BitUtils.findLineNumber(fileBytes, 230);
+        System.out.println("=== GOTO at any bit offset");
+        BitUtils.find(fileBytes, (byte) 236);
 
-        System.out.println("=== Program");
-//        for (int of = 0; of < 16; of++) {
-//            // finds REM (234) "(11) F(43) R(55) O(52) G(44) G(44) ... for of = 2!
-//            BitUtils.printLineNumberAndLength(fileBytes, 8 * 116 - of);
+        System.out.println("=== I at any bit offset");
+        BitUtils.find(fileBytes, (byte) 46);
+
+        System.out.println("=== INKEY$ at any bit offset");
+        BitUtils.find(fileBytes, (byte) 65);
+
+        System.out.println("=== Line number 150 at any bit offset");
+        BitUtils.findLineNumber(fileBytes, 150);
+
+        System.out.println("=== number at any bit offset");
+        BitUtils.find(fileBytes, (byte) 126);
+
+
+//        System.out.println("=== Program");
+////        for (int of = 0; of < 16; of++) {
+////            // finds REM (234) "(11) F(43) R(55) O(52) G(44) G(44) ... for of = 2!
+////            BitUtils.printLineNumberAndLength(fileBytes, 8 * 116 - of);
+////        }
+//        BitUtils.printByteAt(fileBytes, 116);
+//        BitUtils.printByteAt(fileBytes, 117);// first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?
+//        BitUtils.printByteAt(fileBytes, 118);
+//        BitUtils.printByteAt(fileBytes, 119);
+//        int ln = ((fileBytes[116] & 255) << 8) + (fileBytes[117] & 255);
+//        int ll = (fileBytes[118] & 255) + ((fileBytes[119] & 255) << 8);
+//        System.out.println("ln: " + ln);
+//        System.out.println("ll: " + ll);
+//        Map<Integer, byte[]> programLines = ZX81Basic.getProgramLines(fileBytes);
+//        for (Map.Entry<Integer, byte[]> line : programLines.entrySet()) {
+//            int lineNumber = line.getKey();
+//            StringBuffer sb = new StringBuffer();
+//            ZX81Basic.dumpLine(line.getValue(), lineNumber, false, true, true, sb);
+//            System.out.print(sb.toString());
 //        }
-        BitUtils.printByteAt(fileBytes, 116);
-        BitUtils.printByteAt(fileBytes, 117);// first line number is 12, not 10 - perhaps a 0 bit was dropped? try inserting one?
-        BitUtils.printByteAt(fileBytes, 118);
-        BitUtils.printByteAt(fileBytes, 119);
-        int ln = ((fileBytes[116] & 255) << 8) + (fileBytes[117] & 255);
-        int ll = (fileBytes[118] & 255) + ((fileBytes[119] & 255) << 8);
-        System.out.println("ln: " + ln);
-        System.out.println("ll: " + ll);
-        Map<Integer, byte[]> programLines = ZX81Basic.getProgramLines(fileBytes);
-        for (Map.Entry<Integer, byte[]> line : programLines.entrySet()) {
-            int lineNumber = line.getKey();
-            StringBuffer sb = new StringBuffer();
-            ZX81Basic.dumpLine(line.getValue(), lineNumber, false, true, true, sb);
-            System.out.print(sb.toString());
-        }
 
 //        System.out.println("=== Variables");
 //        Map variables = ZX81Basic.getVariables(fileBytes);
