@@ -34,13 +34,6 @@ public class ZX81Lister {
         ZX81SysVars.dumpSystemVariables(fileBytes, 0, ZX81SysVars.SAVE_START, var);
         System.out.println(var);
 
-        System.out.println("=== Newlines (16476 is end of PRBUF, then program block, then D_FILE block)");
-        for (int i = 0; i < fileBytes.length; i++) {
-            if ((fileBytes[i] & 255) == 118) {
-                System.out.println(ZX81SysVars.SAVE_START + i);
-            }
-        }
-
         // insert 2 bits to make sure line 1 works. Line length is still wrong
         //
         byte[] fileBytes1 = BitUtils.insert(fileBytes, 8 * 116, false);
@@ -69,7 +62,7 @@ public class ZX81Lister {
 //            + 7) + 6, true);
 
         System.out.println("=== Program reconstruction");
-        BitUtils.printLine(fileBytes1, 8 * (16509 - ZX81SysVars.SAVE_START), 12, "1 REM \"FROGGING\"");
+        BitUtils.printLine(fileBytes1, 8 * (16509 - ZX81SysVars.SAVE_START), 12);       // 1
         BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);        // 5
         BitUtils.printLine(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START), 12);        // 10
         BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);        // 20
