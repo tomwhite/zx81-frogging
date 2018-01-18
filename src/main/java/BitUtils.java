@@ -48,6 +48,42 @@ public class BitUtils {
         return memoryCopy;
     }
 
+
+    public static byte[] delete(byte[] memory, int bitPosition) {
+        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
+        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
+
+        byte[] memoryCopy = new byte[memory.length + 1];
+        ArrayByteOutput arrayByteOutput = new ArrayByteOutput(memoryCopy, 0, memoryCopy.length);
+        DefaultBitOutput<ByteOutput> bitOutput = new DefaultBitOutput<ByteOutput>(arrayByteOutput);
+
+        int pos = 0;
+        while (true) {
+            try {
+                boolean b = bitInput.readBoolean();
+                if (pos != bitPosition) {
+                    bitOutput.writeBoolean(b);
+                }
+                pos++;
+            } catch (IllegalStateException e) {
+                // EOF
+                for (int i = 0; i < 7; i++) {
+                    try {
+                        bitOutput.writeBoolean(false);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
+
+        return memoryCopy;
+    }
+
     public static byte[] insert(byte[] memory, int bitPosition, boolean value) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
@@ -269,7 +305,6 @@ public class BitUtils {
                     int ll = (c & 255) + ((d & 255) << 8);
 
                     StringBuilder sb = new StringBuilder();
-                    StringBuilder debug = new StringBuilder();
                     StringBuilder debug0 = new StringBuilder();
                     StringBuilder debug1 = new StringBuilder();
                     StringBuilder bitstring = new StringBuilder();
@@ -289,14 +324,11 @@ public class BitUtils {
                     for (int i = 0; i < lineLength; i++) {
                         int e = bitInput.readInt(true, 8) & 255;
                         sb.append(ZX81Translate.translateZX81ToASCII(e));
-                        debug.append(ZX81Translate.translateZX81ToASCII(e)).append("(").append(e).append(")").append(" ");
                         debug0.append(String.format("%-8s", ZX81Translate.translateZX81ToASCII(e))).append(" ");
                         debug1.append(String.format("%-8s", e)).append(" ");
                         bitstring.append(String.format("%8s", Integer.toBinaryString(e)).replace(' ', '0')).append(" ");
                     }
                     System.out.printf("%s %s\n", ln, sb);
-                    System.out.printf("\tDebug: encoded line len: %s, requested line " +
-                        "len: %s, content: %s\n", ll, lineLength, debug);
                     System.out.printf("\t%s\n", debug0);
                     System.out.printf("\t%s\n", debug1);
                     System.out.printf("\t%s\n", bitstring);
@@ -316,4 +348,6 @@ public class BitUtils {
             }
         }
     }
+
+
 }
