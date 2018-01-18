@@ -93,6 +93,21 @@ public class ZX81Lister {
         // Line 170: fix NEWLINE
         fileBytes = BitUtils.insert(fileBytes, 8 * (16857 - ZX81SysVars.SAVE_START + 16), false); // NL
 
+        // Line 200: fix NEWLINE
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16927 - ZX81SysVars.SAVE_START + 2), false);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16927 - ZX81SysVars.SAVE_START + 4), true); // NEXT
+
+        // Line 210: fix NEWLINE
+        fileBytes = BitUtils.set(fileBytes, 8 * (16934 - ZX81SysVars.SAVE_START + 5) + 5, true); // NL
+        fileBytes = BitUtils.set(fileBytes, 8 * (16934 - ZX81SysVars.SAVE_START + 5) + 6, true); // NL
+
+        // Line 220: fix NEWLINE
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16940 - ZX81SysVars.SAVE_START + 10), false);
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16940 - ZX81SysVars.SAVE_START + 26) + 7); // graphic char - hard to know what is right here
+
+        // Line 230: fix start
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16969 - ZX81SysVars.SAVE_START), false);
+
         System.out.println("=== Program reconstruction");
         BitUtils.printLine(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START), 12);        // 1
         BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);        // 5
@@ -113,12 +128,12 @@ public class ZX81Lister {
         BitUtils.printLine(fileBytes, 8 * (16819 - ZX81SysVars.SAVE_START), 20);        // 150
         BitUtils.printLine(fileBytes, 8 * (16843 - ZX81SysVars.SAVE_START), 10);        // 160
         BitUtils.printLine(fileBytes, 8 * (16857 - ZX81SysVars.SAVE_START), 13);        // 170
-        BitUtils.printLine(fileBytes, 8 * (16873 - ZX81SysVars.SAVE_START) + 6, 35);    // 180 IF ... THEN GOTO ...
-        BitUtils.printLine(fileBytes, 8 * (16912 - ZX81SysVars.SAVE_START) + 6, 10);    // 190
-        BitUtils.printLine(fileBytes, 8 * (16926 - ZX81SysVars.SAVE_START) + 6, 3);     // 200 NEXT I ?
-        BitUtils.printLine(fileBytes, 8 * (16933 - ZX81SysVars.SAVE_START) + 5, 2);     // 210 (similar to 146)
-        BitUtils.printLine(fileBytes, 8 * (16939 - ZX81SysVars.SAVE_START) + 5, 16);    // 220
-        BitUtils.printLine(fileBytes, 8 * (16968 - ZX81SysVars.SAVE_START) + 4, 10);     // 230
+        BitUtils.printLine(fileBytes, 8 * (16874 - ZX81SysVars.SAVE_START), 35);        // 180 IF ... THEN GOTO ...
+        BitUtils.printLine(fileBytes, 8 * (16913 - ZX81SysVars.SAVE_START), 10);        // 190
+        BitUtils.printLine(fileBytes, 8 * (16927 - ZX81SysVars.SAVE_START), 3);         // 200
+        BitUtils.printLine(fileBytes, 8 * (16934 - ZX81SysVars.SAVE_START), 2);         // 210 (similar to 146)
+        BitUtils.printLine(fileBytes, 8 * (16940 - ZX81SysVars.SAVE_START), 25);        // 220
+        BitUtils.printLine(fileBytes, 8 * (16969 - ZX81SysVars.SAVE_START), 10);        // 230
         // up to 17013
 
         System.out.println("=== Newlines at any bit offset");
