@@ -2,6 +2,7 @@ import sinclair.basic.ZX81SysVars;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Arrays;
 
 public class ZX81LineAnalyzer {
     public static void main(String[] args) throws Exception {
@@ -16,8 +17,7 @@ public class ZX81LineAnalyzer {
         fileBytes = BitUtils.insert(fileBytes, 8 * (ZX81SysVars.PRBUFF - ZX81SysVars.SAVE_START), false);
         fileBytes = BitUtils.insert(fileBytes, 8 * (ZX81SysVars.MEMBOT - ZX81SysVars.SAVE_START), false);
 
-        // insert 2 bits to make sure line 1 works. Line length is still wrong
-        //
+        // Line 1: insert 2 bits to make sure it works. Line length is still wrong
         fileBytes = BitUtils.insert(fileBytes, 8 * 116, false);
         fileBytes = BitUtils.insert(fileBytes, 8 * 118, false);
         fileBytes = BitUtils.set(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 7) + 5, true);
@@ -27,22 +27,43 @@ public class ZX81LineAnalyzer {
         fileBytes = BitUtils.delete(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 8) + 7);
         fileBytes = BitUtils.delete(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 8) + 7);
 
-        // insert a bit to make sure line 2 ends with a " to close the print
+        // Line 5: insert a bit to make sure ends with a " to close the print
         // 5 PRINT AT 16,3;"{6}{H}{F}{F}{6}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}+{T}"
         fileBytes = BitUtils.insert(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START + 4 + 38), false);
 
-        // line 3, fix NEWLINE
+        // Line 10: fix NEWLINE
         fileBytes = BitUtils.set(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START + 4 + 11) + 1, true);
 
+        // Line 30: insert 1 bits (PRINT AT H,V ...)
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START + 4 + 6), false);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START + 4 + 6) + 2, false);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START + 4 + 6) + 5, false);
 
-        Line l1 = new Line(1, new int[] {234, 11, 43, 55, 52, 44, 44, 46, 51, 44, 11, 118});
-        BitUtils.printLine(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START), 12, l1);
+        // Line 40: fix NEWLINE, but still lots of corruption within the line!
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START + 4 + 6), false);
 
-        BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);
+//        Line l1 = new Line(1, new int[] {234, 11, 43, 55, 52, 44, 44, 46, 51, 44, 11, 118});
+//        BitUtils.printLine(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START), 12, l1);
+//
+//        BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);
+//
+//        Line l10 = new Line(10, new int[] {241, 45, 20, 1, 5, 126, 132, 112, 0, 0, 0, 118});
+//        BitUtils.printLine(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START), 12, l10);
+//
+//        BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);
+//
+//        BitUtils.printLine(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START), 10);
+        
+        Line l40 = new Line(40, new int[] {241, 50, 20, 207, 16, 64, 23, 29, 28, 126, 132, 32, 0, 0, 0, 21, 29, 126, 129, 0, 0, 0, 0, 17, 118});
+        BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 25, l40);
 
-        Line l3 = new Line(10, new int[] {241, 45, 20, 1, 5, 126, 132, 112, 0, 0, 0, 118});
-        BitUtils.printLine(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START), 12, l3);
+        byte[] one = ZX81Numbers.getNumberValues(1.0);
+        System.out.println(one[0] & 255);
+        System.out.println(Arrays.toString(one));
 
-        BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);
+        byte[] ten = ZX81Numbers.getNumberValues(10);
+        System.out.println(ten[0] & 255);
+        System.out.println(Arrays.toString(ten));
+
     }
 }
