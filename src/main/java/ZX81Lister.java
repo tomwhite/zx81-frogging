@@ -79,13 +79,27 @@ public class ZX81Lister {
         fileBytes = BitUtils.delete(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START + 15));
         fileBytes = BitUtils.set(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START + 24) + 2, true); // NL
 
+        // Line 140: fix NEWLINE
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START + 10) + 3); // THEN
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START + 16), false); // 1
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START + 18) + 5, false); // NL
+
+        // Line 150: fix NEWLINE
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16819 - ZX81SysVars.SAVE_START), false);
+
+        // Line 160: fix NEWLINE
+        fileBytes = BitUtils.set(fileBytes, 8 * (16843 - ZX81SysVars.SAVE_START + 13) + 5, true); // NL
+
+        // Line 170: fix NEWLINE
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16857 - ZX81SysVars.SAVE_START + 16), false); // NL
+
         System.out.println("=== Program reconstruction");
         BitUtils.printLine(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START), 12);        // 1
         BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);        // 5
         BitUtils.printLine(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START), 12);        // 10
         BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);        // 20
         BitUtils.printLine(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START), 10);        // 30
-        BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 20);        // 40 LET M=INT(... ? number at 16626 (+6 bit offset)
+        BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 20);        // 40
         BitUtils.printLine(fileBytes, 8 * (16643 - ZX81SysVars.SAVE_START), 13);        // 50
         BitUtils.printLine(fileBytes, 8 * (16660 - ZX81SysVars.SAVE_START), 5);         // 60
         BitUtils.printLine(fileBytes, 8 * (16674 - ZX81SysVars.SAVE_START), 13);        // 6x
@@ -95,10 +109,10 @@ public class ZX81Lister {
         BitUtils.printLine(fileBytes, 8 * (16729 - ZX81SysVars.SAVE_START), 12);        // 100
         BitUtils.printLine(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START), 21);        // 120
         BitUtils.printLine(fileBytes, 8 * (16770 - ZX81SysVars.SAVE_START), 21);        // 130
-        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START), 20);        // 140 IF ... THEN GOTO ...
-        System.out.println("...missing");
-        BitUtils.printLine(fileBytes, 8 * (16842 - ZX81SysVars.SAVE_START) + 7, 10);    // 160
-        BitUtils.printLine(fileBytes, 8 * (16856 - ZX81SysVars.SAVE_START) + 7, 13);    // 170 LET H=H+1
+        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START), 20);        // 140
+        BitUtils.printLine(fileBytes, 8 * (16819 - ZX81SysVars.SAVE_START), 20);        // 150
+        BitUtils.printLine(fileBytes, 8 * (16843 - ZX81SysVars.SAVE_START), 10);        // 160
+        BitUtils.printLine(fileBytes, 8 * (16857 - ZX81SysVars.SAVE_START), 13);        // 170
         BitUtils.printLine(fileBytes, 8 * (16873 - ZX81SysVars.SAVE_START) + 6, 35);    // 180 IF ... THEN GOTO ...
         BitUtils.printLine(fileBytes, 8 * (16912 - ZX81SysVars.SAVE_START) + 6, 10);    // 190
         BitUtils.printLine(fileBytes, 8 * (16926 - ZX81SysVars.SAVE_START) + 6, 3);     // 200 NEXT I ?

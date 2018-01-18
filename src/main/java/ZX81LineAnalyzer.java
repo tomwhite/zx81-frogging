@@ -62,6 +62,20 @@ public class ZX81LineAnalyzer {
         fileBytes = BitUtils.delete(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START + 15));
         fileBytes = BitUtils.set(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START + 24) + 2, true); // NL
 
+        // Line 140: fix NEWLINE
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START + 10) + 3); // THEN
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START + 16), false); // 1
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START + 18) + 5, false); // NL
+
+        // Line 150: fix NEWLINE
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16819 - ZX81SysVars.SAVE_START), false);
+
+        // Line 160: fix NEWLINE
+        fileBytes = BitUtils.set(fileBytes, 8 * (16843 - ZX81SysVars.SAVE_START + 13) + 5, true); // NL
+
+        // Line 170: fix NEWLINE
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16857 - ZX81SysVars.SAVE_START + 16), false); // NL
+
 //        Line l1 = new Line(1, new int[] {234, 11, 43, 55, 52, 44, 44, 46, 51, 44, 11, 118});
 //        BitUtils.printLine(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START), 12, l1);
 //
@@ -93,12 +107,22 @@ public class ZX81LineAnalyzer {
 //
 //        BitUtils.printLine(fileBytes, 8 * (16729 - ZX81SysVars.SAVE_START), 12);
 //
-//        Line l120 = new Line(120, new int[] {235, 46, 20, 29, 126, 129, 0, 0, 0, 0, 223, 50, 21, 29, 126, 129, 0, 0, 0, 0, 118}); // incomplete
+//        Line l120 = new Line(120, new int[] {235, 46, 20, 29, 126, 129, 0, 0, 0, 0, 223, 50, 21, 29, 126, 129, 0, 0, 0, 0, 118});
 //        BitUtils.printLine(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START), 21, l120);
 //
 //        BitUtils.printLine(fileBytes, 8 * (16770 - ZX81SysVars.SAVE_START), 21);
+//
+//        Line l140 = new Line(140, new int[] {250, 65, 20, 11, 33, 11, 222, 241, 38, 20, 38, 22, 29, 126, 129, 0, 0, 0, 0, 118});
+//        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START), 20, l140);
+//
+//        Line l150 = new Line(150, new int[] {250, 65, 20, 11, 36, 11, 222, 241, 38, 20, 38, 21, 29, 126, 129, 0, 0, 0, 0, 118});
+//        BitUtils.printLine(fileBytes, 8 * (16819 - ZX81SysVars.SAVE_START), 20, l150);
 
-        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START), 20);
+        Line l160 = new Line(160, new int[] {245, 193, 45, 26, 59, 25, 11, 0, 11, 118});
+        BitUtils.printLine(fileBytes, 8 * (16843 - ZX81SysVars.SAVE_START), 10, l160);
+
+        Line l170 = new Line(170, new int[] {241, 45, 20, 45, 21, 29, 126, 129, 0, 0, 0, 0, 118});
+        BitUtils.printLine(fileBytes, 8 * (16857 - ZX81SysVars.SAVE_START), 13, l170);
 
         byte[] one = ZX81Numbers.getNumberValues(1.0);
         System.out.println(one[0] & 255);
