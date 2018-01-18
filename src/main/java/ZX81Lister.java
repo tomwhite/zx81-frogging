@@ -34,50 +34,68 @@ public class ZX81Lister {
         ZX81SysVars.dumpSystemVariables(fileBytes, 0, ZX81SysVars.SAVE_START, var);
         System.out.println(var);
 
-        // insert 2 bits to make sure line 1 works. Line length is still wrong
-        //
-        byte[] fileBytes1 = BitUtils.insert(fileBytes, 8 * 116, false);
-        fileBytes1 = BitUtils.insert(fileBytes1, 8 * 118, false);
-        byte[] line1 = new byte[12];
-        System.arraycopy(fileBytes1, 116 + 4, line1, 0, line1.length);
-        StringBuffer sb1 = new StringBuffer();
-        ZX81Basic.dumpLine(line1, 1, false, true, true, sb1);
-        System.out.print(sb1.toString());
+        // Line 1: insert 2 bits to make sure it works. Line length is still wrong
+        fileBytes = BitUtils.insert(fileBytes, 8 * 116, false);
+        fileBytes = BitUtils.insert(fileBytes, 8 * 118, false);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 7) + 5, true);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 7) + 6, true); // C -> I
+        fileBytes = BitUtils.set(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 8) + 2, true); // ( -> N
+        fileBytes = BitUtils.set(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 8) + 6, true); // ( -> N
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 8) + 7);
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START + 4 + 8) + 7);
 
-        // insert a bit to make sure line 2 ends with a " to close the print
+        // Line 5: insert a bit to make sure ends with a " to close the print
         // 5 PRINT AT 16,3;"{6}{H}{F}{F}{6}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}{E}+{T}"
         fileBytes = BitUtils.insert(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START + 4 + 38), false);
-        byte[] line2 = new byte[40];
-        System.arraycopy(fileBytes, 16525 - ZX81SysVars.SAVE_START + 4, line2, 0, line2.length);
-        System.out.println("line2 end byte: " + (line2[line2.length - 1] & 255));
-        StringBuffer sb2 = new StringBuffer();
-        ZX81Basic.dumpLine(line2, 5, false, true, true, sb2);
-        System.out.print(sb2.toString());
 
-        // insert 1 bits for line 5 (PRINT AT H,V) ?
+        // Line 10: fix NEWLINE
+        fileBytes = BitUtils.set(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START + 4 + 11) + 1, true);
+
+        // Line 30: insert 1 bits (PRINT AT H,V ...)
         fileBytes = BitUtils.insert(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START + 4 + 6), false);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START + 4 + 6) + 2, false);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START + 4 + 6) + 5, false);
 
-        // set 1 bits for NL on line 6 (LET M=) ? Converts 74_GRAPHICS to NEWLINE
-//        fileBytes = BitUtils.set(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START + 4
-//            + 7) + 6, true);
+        // Line 40: fix NEWLINE, but still lots of corruption within the line!
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START + 4 + 6), false);
+
+        // Line 60: fix NEWLINE, but still some corruption within
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START + 3), false);
+
+        // Line 61 (or line after 60): fix NEWLINE, but still some corruption within
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16674 - ZX81SysVars.SAVE_START + 4) + 1);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16674 - ZX81SysVars.SAVE_START + 4) + 1, true);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16674 - ZX81SysVars.SAVE_START + 4) + 2, true);
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16674 - ZX81SysVars.SAVE_START + 11));
+
+        // Line 70: fix NEWLINE
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START + 11) + 7);
+
+        // Line 100: fix NEWLINE
+        fileBytes = BitUtils.insert(fileBytes, 8 * (16729 - ZX81SysVars.SAVE_START + 3), false);
+        fileBytes = BitUtils.set(fileBytes, 8 * (16729 - ZX81SysVars.SAVE_START + 15) + 1, true); // NL
+
+        // Line 120: fix NEWLINE
+        fileBytes = BitUtils.delete(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START + 15));
+        fileBytes = BitUtils.set(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START + 24) + 2, true); // NL
 
         System.out.println("=== Program reconstruction");
-        BitUtils.printLine(fileBytes1, 8 * (16509 - ZX81SysVars.SAVE_START), 12);       // 1
+        BitUtils.printLine(fileBytes, 8 * (16509 - ZX81SysVars.SAVE_START), 12);        // 1
         BitUtils.printLine(fileBytes, 8 * (16525 - ZX81SysVars.SAVE_START), 40);        // 5
         BitUtils.printLine(fileBytes, 8 * (16569 - ZX81SysVars.SAVE_START), 12);        // 10
         BitUtils.printLine(fileBytes, 8 * (16585 - ZX81SysVars.SAVE_START), 11);        // 20
         BitUtils.printLine(fileBytes, 8 * (16600 - ZX81SysVars.SAVE_START), 10);        // 30
         BitUtils.printLine(fileBytes, 8 * (16614 - ZX81SysVars.SAVE_START), 20);        // 40 LET M=INT(... ? number at 16626 (+6 bit offset)
-        BitUtils.printLine(fileBytes, 8 * (16642 - ZX81SysVars.SAVE_START) + 7, 13);    // 50
-        BitUtils.printLine(fileBytes, 8 * (16659 - ZX81SysVars.SAVE_START) + 7, 5);// nope, probably not a FOR as there is only one NEXT, could be PRINT
-        System.out.println("...missing");
+        BitUtils.printLine(fileBytes, 8 * (16643 - ZX81SysVars.SAVE_START), 13);        // 50
+        BitUtils.printLine(fileBytes, 8 * (16660 - ZX81SysVars.SAVE_START), 5);         // 60
+        BitUtils.printLine(fileBytes, 8 * (16674 - ZX81SysVars.SAVE_START), 13);        // 6x
         BitUtils.printLine(fileBytes, 8 * (16691 - ZX81SysVars.SAVE_START), 13);        // 70 (1 bit difference between line number 6 and 70)
-        BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START) + 1, 10);    // 80
-        BitUtils.printLine(fileBytes, 8 * (16722 - ZX81SysVars.SAVE_START) + 1, 3);     // 90
+        BitUtils.printLine(fileBytes, 8 * (16708 - ZX81SysVars.SAVE_START), 10);        // 80
+        BitUtils.printLine(fileBytes, 8 * (16722 - ZX81SysVars.SAVE_START), 3);         // 90
         BitUtils.printLine(fileBytes, 8 * (16729 - ZX81SysVars.SAVE_START), 12);        // 100
-        BitUtils.printLine(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START), 21);        // 120 FOR I=1 TO
-        BitUtils.printLine(fileBytes, 8 * (16770 - ZX81SysVars.SAVE_START) + 1, 21);    // 130
-        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START) + 1, 20);    // 140 IF ... THEN GOTO ...
+        BitUtils.printLine(fileBytes, 8 * (16745 - ZX81SysVars.SAVE_START), 21);        // 120
+        BitUtils.printLine(fileBytes, 8 * (16770 - ZX81SysVars.SAVE_START), 21);        // 130
+        BitUtils.printLine(fileBytes, 8 * (16795 - ZX81SysVars.SAVE_START), 20);        // 140 IF ... THEN GOTO ...
         System.out.println("...missing");
         BitUtils.printLine(fileBytes, 8 * (16842 - ZX81SysVars.SAVE_START) + 7, 10);    // 160
         BitUtils.printLine(fileBytes, 8 * (16856 - ZX81SysVars.SAVE_START) + 7, 13);    // 170 LET H=H+1

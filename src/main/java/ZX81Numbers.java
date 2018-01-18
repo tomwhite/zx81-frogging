@@ -1,3 +1,5 @@
+import sinclair.basic.ZX81Basic;
+
 public class ZX81Numbers {
     public static double getNumber(byte[] content, int pos) {
         // Based on sinclair.basic.ZX81Basic.getNumber
@@ -44,5 +46,14 @@ public class ZX81Numbers {
         content[4] = (byte) (man & 255);
 
         return content;
+    }
+
+    public static String debugNumberValues(double num) {
+        StringBuffer sb = new StringBuffer();
+        byte[] numberValues = getNumberValues(num);
+        for (byte b : numberValues) {
+            sb.append(b & 255).append(",");
+        }
+        return sb.toString();
     }
 }
