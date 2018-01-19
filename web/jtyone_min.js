@@ -25,7 +25,7 @@ function ZX81EmulatorUI(r,a) {
 	if(a!=null)
 	{
 		if(v.length==0&&a.length!=0){	
-			v="images/"+a+".tzx.zip";
+			v="images/"+a+".p";
 		}
 	}
     var O = v.indexOf("@"); - 1 != O && (g = parseInt(v.substr(O + 1)));
