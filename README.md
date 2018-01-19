@@ -6,3 +6,5 @@ only those starting at address 16393 (VERSN).
 ```bash
 ~/sw/zxtext2p/zxtext2p -o frogging-reconstruction.p frogging-reconstruction.bas
 ```
+
+Then open the P file using [zxsp](https://www.macupdate.com/app/mac/24529/zxsp).

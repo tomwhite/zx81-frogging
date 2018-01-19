@@ -21,7 +21,7 @@ public class BitUtils {
         while (true) {
             try {
                 boolean b = bitInput.readBoolean();
-                if (pos == bitPosition) { // insert
+                if (pos == bitPosition) { // ins
                     //System.out.println(">"  + value);
                     bitOutput.writeBoolean(value);
                 } else {
@@ -49,7 +49,7 @@ public class BitUtils {
     }
 
 
-    public static byte[] delete(byte[] memory, int bitPosition) {
+    public static byte[] del(byte[] memory, int bitPosition) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
 
@@ -84,7 +84,7 @@ public class BitUtils {
         return memoryCopy;
     }
 
-    public static byte[] insert(byte[] memory, int bitPosition, boolean value) {
+    public static byte[] ins(byte[] memory, int bitPosition, boolean value) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
 
@@ -95,7 +95,7 @@ public class BitUtils {
         int pos = 0;
         while (true) {
             try {
-                if (pos == bitPosition) { // insert
+                if (pos == bitPosition) { // ins
                     //System.out.println(">"  + value);
                     bitOutput.writeBoolean(value);
                 }
@@ -321,8 +321,9 @@ public class BitUtils {
                     bitstring.append(String.format("%8s", Integer.toBinaryString(c)).replace(' ', '0')).append(" ");
                     bitstring.append(String.format("%8s", Integer.toBinaryString(d)).replace(' ', '0')).append(" ");
 
+                    int e = 0;
                     for (int i = 0; i < lineLength; i++) {
-                        int e = bitInput.readInt(true, 8) & 255;
+                        e = bitInput.readInt(true, 8) & 255;
                         sb.append(ZX81Translate.translateZX81ToASCII(e));
                         debug0.append(String.format("%-8s", ZX81Translate.translateZX81ToASCII(e))).append(" ");
                         debug1.append(String.format("%-8s", e)).append(" ");
@@ -334,6 +335,14 @@ public class BitUtils {
                     System.out.printf("\t%s\n", bitstring);
                     if (suggestion != null) {
                         suggestion.print();
+                        if (suggestion.getNumber() != ln) {
+                            System.out.printf("\tWarning: Line number differs. Expected %d, but was %d.\n", suggestion.getNumber(), ln);
+                        }
+                    }
+                    if (lineLength != ll) {
+                        System.out.printf("\tWarning: Line length differs. Expected %d, but was %d.\n", lineLength, ll);
+                    } else if (e != 118) {
+                        System.out.printf("\tWarning: Line does not end with NEWLINE.\n");
                     }
                     System.out.println();
                 }
