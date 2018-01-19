@@ -20,3 +20,15 @@ which can be generated like so:
 ```bash
 xxd -p frogging-reconstruction.p | tr -d '\n' > web/images/frogging.p.hex
 ```
+
+To try out locally, start a webserver:
+
+```bash
+(cd web; python -m SimpleHTTPServer 8000)
+```
+
+and go to [http://localhost:8000/frogging.html](http://localhost:8000/frogging.html).
+
+Type R followed by return to run the program, and use the 5 and 8 keys to move left and right.
+
+It's not the best game ever, but it's the first program I ever wrote (age 9), so it's not surprising.

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ZX81 Frogging</title>
+</head>
+<body>
+<script>
+window.onerror = function(msg,url,line)
+  {
+  alert('Error: '+msg+' line: '+line+' script:'+url)
+  }
+</script>
+<script src="./jtyone_min.js"></script>
+<script>
+var emulatorUI;
+window.onload = function()
+  {
+  emulatorUI = new ZX81EmulatorUI('emulator_canvas','frogging');
+  //'emulator_status');
+  }
+window.onunload = function()
+  {
+  emulatorUI.stop();
+  }
+</script>
+
+<div style="width: 52%;">
+				<canvas id="emulator_canvas">
+					It appears your browser does not support the canvas element so no emulator is available.
+				</canvas>		
+</div>
+<p>
+	<span id="statusLabel">&nbsp;</span>
+</p>
+</body>
+</html>
