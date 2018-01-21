@@ -61,10 +61,10 @@ public class ZX81PToListing {
     };
 
     public static String pFileToListing(byte[] memory) {
-        int offset = 16509 - ZX81SysVars.SAVE_START;
-        int end = ZX81SysVars.getVariableValueOffset(memory, 16396, 2);
+        int offset = ZX81SysVars.END - ZX81SysVars.SAVE_START;
+        int end = ZX81SysVars.getVariableValueOffset(memory, ZX81SysVars.D_FILE, 2);
         if (end < 0) {
-            end = ZX81SysVars.getVariableValueOffset(memory, 16400, 2);
+            end = ZX81SysVars.getVariableValueOffset(memory, ZX81SysVars.VARS, 2);
         }
         if (end > memory.length) {
             end = memory.length;

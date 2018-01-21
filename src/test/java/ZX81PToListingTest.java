@@ -1,7 +1,5 @@
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,11 +25,7 @@ public class ZX81PToListingTest {
 
     @Test
     public void testPFileToListing() throws IOException {
-        File f = new File("frogging-reconstruction.p");
-        FileInputStream fis = new FileInputStream(f);
-        byte[] fileBytes = new byte[fis.available()];
-        fis.read(fileBytes);
-        fis.close();
+        byte[] fileBytes = FroggingProgram.loadFileBytes();
 
         String s = ZX81PToListing.pFileToListing(fileBytes);
         List<String> actual = Arrays.asList(s.split("\n"));

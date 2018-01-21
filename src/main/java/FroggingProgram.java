@@ -5,12 +5,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class FroggingProgram {
-    public static byte[] loadAndEditFileBytes() throws IOException {
+
+    public static byte[] loadFileBytes() throws IOException {
         File f = new File("pfiles/frogging-normalized.1.program1.p");
         FileInputStream fis = new FileInputStream(f);
         byte[] fileBytes = new byte[fis.available()];
         fis.read(fileBytes);
         fis.close();
+        return fileBytes;
+    }
+
+    public static byte[] loadAndEditFileBytes() throws IOException {
+        byte[] fileBytes = loadFileBytes();
 
         // ins two bits to see if we can get frogging program out...
         fileBytes = BitUtils.ins(fileBytes, 8 * (ZX81SysVars.PRBUFF - ZX81SysVars.SAVE_START), false);

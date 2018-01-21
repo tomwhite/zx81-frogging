@@ -28,7 +28,7 @@ public class ZX81LineFinder {
         Map<Integer, CandidateLine> candidateLines = new TreeMap<>();
 
         // get all NEWLINES at any bit offset
-        List<Integer> newlines = BitUtils.findNewlines(fileBytes, 16509 - ZX81SysVars.SAVE_START);
+        List<Integer> newlines = BitUtils.findNewlines(fileBytes, ZX81SysVars.END - ZX81SysVars.SAVE_START);
         // if line length takes us to next newline, then we have a perfect match
         for (int i = 0; i < newlines.size(); i++) {
             int newlineBitPosition = newlines.get(i);
