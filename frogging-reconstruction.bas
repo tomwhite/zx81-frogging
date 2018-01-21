@@ -1,24 +1,24 @@
- 1 REM "FROGGING"
- 5 PRINT AT 16,3;"\..\##\!!\!!\..\:'\:'\:'\:'\:'\:'\:'\:'\:'\:'\:'+\.'"
-10 LET H=15
-20 LET V=5
-30 PRINT AT H,V;"\.'"
-40 LET M=INT(RND*10+1)
-50 FOR I=1 TO M
-60 PRINT AT H,V;" "
-61 LET H=H-1
-70 LET V=V+1
-80 PRINT AT H,V;"%*"
-90 NEXT I
-100 LET A=11
-120 FOR I=1 TO M+1
-130 PRINT AT 14,A;" \ '\.'\'  "
-140 IF INKEY$="5" THEN LET A=A-1
-150 IF INKEY$="8" THEN LET A=A+1
-160 PRINT AT H,V;" "
-170 LET H=H+1
-180 IF H=14 AND V=A+2 THEN GOTO 220
-190 PRINT AT H,V;"%*"
-200 NEXT I
-210 STOP
-220 PRINT AT 14,A+2;"%("
+   1 REM "FROGGING"
+   5 PRINT AT 16,3;"\..\##\!!\!!\..\:'\:'\:'\:'\:'\:'\:'\:'\:'\:'\:'+\.'"
+  10 LET H=15
+  20 LET V=5
+  30 PRINT AT H,V;"\.'"
+  40 LET M=INT (RND*10+1)
+  50 FOR I=1 TO M
+  60 PRINT AT H,V;" "
+  61 LET H=H-1
+  70 LET V=V+1
+  80 PRINT AT H,V;"%*"
+  90 NEXT I
+ 100 LET A=11
+ 120 FOR I=1 TO M+1
+ 130 PRINT AT 14,A;" \ '\.'\'  "
+ 140 IF INKEY$="5" THEN LET A=A-1
+ 150 IF INKEY$="8" THEN LET A=A+1
+ 160 PRINT AT H,V;" "
+ 170 LET H=H+1
+ 180 IF H=14 AND V=A+2 THEN GOTO 220
+ 190 PRINT AT H,V;"%*"
+ 200 NEXT I
+ 210 STOP
+ 220 PRINT AT 14,A+2;"%("
