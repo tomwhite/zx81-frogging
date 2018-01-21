@@ -3,6 +3,8 @@ import sinclair.basic.ZX81SysVars;
 import sinclair.basic.ZX81Translate;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by tom on 27/03/2016.
@@ -183,7 +185,9 @@ public class BitUtils {
         }
     }
 
-    public static void findNewlines(byte[] memory, int start) {
+    public static List<Integer> findNewlines(byte[] memory, int start) {
+        List<Integer> newlines = new ArrayList();
+
         byte search = 118;
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
@@ -204,6 +208,7 @@ public class BitUtils {
                 }
                 if (((byte) b) == search) {
                     int startPos = pos - 8;
+                    newlines.add(startPos);
                     System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
                     printLineNumberAndLength(memory, startPos + 8);
                     if (lastPos != 0) {
@@ -219,6 +224,7 @@ public class BitUtils {
                 break;
             }
         }
+        return newlines;
     }
 
 
@@ -228,6 +234,11 @@ public class BitUtils {
     }
 
     public static void printByteAtBitPosition(byte[] memory, int bitPosition) {
+        int v = getByteAtBitPosition(memory, bitPosition);
+        System.out.printf("%s (%s)\n", ZX81Translate.translateZX81ToASCII(v), v);
+    }
+
+    public static int getByteAtBitPosition(byte[] memory, int bitPosition) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
 
@@ -235,8 +246,7 @@ public class BitUtils {
         while (true) {
             try {
                 if (pos == bitPosition) {
-                    int v = bitInput.readInt(true, 8);
-                    System.out.printf("%s (%s)\n", ZX81Translate.translateZX81ToASCII(v), v);
+                    return bitInput.readInt(true, 8);
                 }
                 bitInput.readBoolean();
                 pos++;
@@ -248,6 +258,7 @@ public class BitUtils {
                 break;
             }
         }
+        throw new IllegalArgumentException();
     }
 
 
@@ -321,8 +332,16 @@ public class BitUtils {
                     bitstring.append(String.format("%8s", Integer.toBinaryString(c)).replace(' ', '0')).append(" ");
                     bitstring.append(String.format("%8s", Integer.toBinaryString(d)).replace(' ', '0')).append(" ");
 
+                    int maxLineLength;
+                    if (lineLength > 0) {
+                        maxLineLength = lineLength;
+                    } else if (ll < 50) {
+                        maxLineLength = ll;
+                    } else {
+                        maxLineLength = 0;
+                    }
                     int e = 0;
-                    for (int i = 0; i < lineLength; i++) {
+                    for (int i = 0; i < maxLineLength; i++) {
                         e = bitInput.readInt(true, 8) & 255;
                         sb.append(ZX81Translate.translateZX81ToASCII(e));
                         debug0.append(String.format("%-8s", ZX81Translate.translateZX81ToASCII(e))).append(" ");
@@ -340,7 +359,9 @@ public class BitUtils {
                         }
                     }
                     if (lineLength != ll) {
-                        System.out.printf("\tWarning: Line length differs. Expected %d, but was %d.\n", lineLength, ll);
+                        if (lineLength > 0) {
+                            System.out.printf("\tWarning: Line length differs. Expected %d, but was %d.\n", lineLength, ll);
+                        }
                     } else if (e != 118) {
                         System.out.printf("\tWarning: Line does not end with NEWLINE.\n");
                     }
