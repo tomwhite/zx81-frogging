@@ -112,6 +112,7 @@ public class ZX81LineFinder {
         System.out.println();
 
         for (CandidateLine candidateLine : candidateLines.values()) {
+            System.out.printf("%s (+%s bit offset)\n", ZX81SysVars.SAVE_START + candidateLine.lineStartBitPosition / 8, candidateLine.lineStartBitPosition % 8);
             BitUtils.printLine(fileBytes, candidateLine.lineStartBitPosition, (candidateLine.approximateLengthBits / 8) - 4);
         }
     }
