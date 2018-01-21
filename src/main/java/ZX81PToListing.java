@@ -1,5 +1,8 @@
 import sinclair.basic.ZX81SysVars;
 
+/**
+ * Convert a P file to a ASCII listing that can be compiled by http://freestuff.grok.co.uk/zxtext2p/index.html.
+ */
 public class ZX81PToListing {
 
     private static class ListingLine {
