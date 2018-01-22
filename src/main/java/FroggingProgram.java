@@ -6,6 +6,15 @@ import java.io.IOException;
 
 public class FroggingProgram {
 
+    public static byte[] loadReconstructionFileBytes() throws IOException {
+        File f = new File("pfiles/frogging-reconstruction.p");
+        FileInputStream fis = new FileInputStream(f);
+        byte[] fileBytes = new byte[fis.available()];
+        fis.read(fileBytes);
+        fis.close();
+        return fileBytes;
+    }
+
     public static byte[] loadFileBytes() throws IOException {
         File f = new File("pfiles/frogging-normalized.1.program1.p");
         FileInputStream fis = new FileInputStream(f);
