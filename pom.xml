@@ -39,6 +39,21 @@
             <systemPath>${basedir}/lib/tapeutils.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>org.biojava</groupId>
+            <artifactId>core</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.biojava</groupId>
+            <artifactId>alignment</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.biojava</groupId>
+            <artifactId>sequencing</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
