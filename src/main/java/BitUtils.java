@@ -11,7 +11,15 @@ import java.util.List;
  */
 public class BitUtils {
 
-    public static byte[] set(byte[] memory, int bitPosition, boolean value) {
+    private interface BitProcessor {
+        void process(int bitPosition, boolean bit, DefaultBitOutput<ByteOutput> bitOutput) throws IOException;
+    }
+
+    private interface BitReader {
+        void read(int bitPosition, boolean bit) throws IOException;
+    }
+
+    private static byte[] processBitwise(byte[] memory, BitProcessor bitProcessor) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
 
@@ -22,14 +30,7 @@ public class BitUtils {
         int pos = 0;
         while (true) {
             try {
-                boolean b = bitInput.readBoolean();
-                if (pos == bitPosition) { // ins
-                    //System.out.println(">"  + value);
-                    bitOutput.writeBoolean(value);
-                } else {
-                    //System.out.println(b);
-                    bitOutput.writeBoolean(b);
-                }
+                bitProcessor.process(pos, bitInput.readBoolean(), bitOutput);
                 pos++;
             } catch (IllegalStateException e) {
                 // EOF
@@ -50,139 +51,87 @@ public class BitUtils {
         return memoryCopy;
     }
 
-
-    public static byte[] del(byte[] memory, int bitPosition) {
+    private static void readBitwise(byte[] memory, BitReader bitReader) {
         ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
         DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
-
-        byte[] memoryCopy = new byte[memory.length + 1];
-        ArrayByteOutput arrayByteOutput = new ArrayByteOutput(memoryCopy, 0, memoryCopy.length);
-        DefaultBitOutput<ByteOutput> bitOutput = new DefaultBitOutput<ByteOutput>(arrayByteOutput);
 
         int pos = 0;
         while (true) {
             try {
-                boolean b = bitInput.readBoolean();
-                if (pos != bitPosition) {
-                    bitOutput.writeBoolean(b);
-                }
+                bitReader.read(pos, bitInput.readBoolean());
                 pos++;
             } catch (IllegalStateException e) {
                 // EOF
-                for (int i = 0; i < 7; i++) {
-                    try {
-                        bitOutput.writeBoolean(false);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
                 break;
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
             }
         }
+    }
 
-        return memoryCopy;
+    public static byte[] set(byte[] memory, int bitPosition, boolean value) {
+        return processBitwise(memory, (pos, bit, bitOutput) -> {
+            if (pos == bitPosition) {
+                bitOutput.writeBoolean(value);
+            } else {
+                bitOutput.writeBoolean(bit);
+            }
+        });
+    }
+
+    public static byte[] del(byte[] memory, int bitPosition) {
+        return processBitwise(memory, (pos, bit, bitOutput) -> {
+            if (pos != bitPosition) {
+                bitOutput.writeBoolean(bit);
+            }
+        });
     }
 
     public static byte[] ins(byte[] memory, int bitPosition, boolean value) {
-        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
-        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
-
-        byte[] memoryCopy = new byte[memory.length + 1];
-        ArrayByteOutput arrayByteOutput = new ArrayByteOutput(memoryCopy, 0, memoryCopy.length);
-        DefaultBitOutput<ByteOutput> bitOutput = new DefaultBitOutput<ByteOutput>(arrayByteOutput);
-
-        int pos = 0;
-        while (true) {
-            try {
-                if (pos == bitPosition) { // ins
-                    //System.out.println(">"  + value);
-                    bitOutput.writeBoolean(value);
-                }
-                boolean b = bitInput.readBoolean();
-                //System.out.println(b);
-                bitOutput.writeBoolean(b);
-                pos++;
-            } catch (IllegalStateException e) {
-                // EOF
-                for (int i = 0; i < 7; i++) {
-                    try {
-                        bitOutput.writeBoolean(false);
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
+        return processBitwise(memory, (pos, bit, bitOutput) -> {
+            if (pos == bitPosition) {
+                bitOutput.writeBoolean(value);
             }
-        }
-
-        return memoryCopy;
+            bitOutput.writeBoolean(bit);
+        });
     }
 
     public static void find(byte[] memory, byte search) {
-        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
-        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
-
-        int b = 0;
-        int pos = 0;
-        int lastPos = 0;
-        while (true) {
-            try {
-                boolean bit = bitInput.readBoolean();
-                pos++;
+        readBitwise(memory, new BitReader() {
+            int b = 0;
+            @Override
+            public void read(int bitPosition, boolean bit) throws IOException {
                 b = (b << 1) & 0xFF;
                 if (bit) {
                     b = b | 1;
                 }
                 if (((byte) b) == search) {
-                    int startPos = pos - 8;
+                    int startPos = bitPosition + 1 - 8;
                     System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
                     printByteAtBitPosition(memory, startPos + 8);
-                    lastPos = pos;
                 }
-            } catch (IllegalStateException e) {
-                // EOF
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
             }
-        }
+        });
     }
 
     public static void findLineNumber(byte[] memory, int lineNumber) {
-        ArrayByteInput arrayByteInput = new ArrayByteInput(memory, 0, memory.length);
-        DefaultBitInput<ByteInput> bitInput = new DefaultBitInput<ByteInput>(arrayByteInput);
-
-        int b = 0;
-        int pos = 0;
-        while (true) {
-            try {
-                boolean bit = bitInput.readBoolean();
-                pos++;
+        readBitwise(memory, new BitReader() {
+            int b = 0;
+            @Override
+            public void read(int bitPosition, boolean bit) throws IOException {
                 b = (b << 1) & 0xFFFF;
                 if (bit) {
                     b = b | 1;
                 }
                 int ln = (((b >> 8) & 255) << 8) + (b & 255);
                 if (ln == lineNumber) {
-                    int startPos = pos - 16;
+                    int startPos = bitPosition + 1 - 16;
                     System.out.printf("Found at byte pos %s (+%s bit offset)\n", ZX81SysVars.SAVE_START + (startPos / 8), startPos % 8);
                     printLineNumberAndLength(memory, startPos);
                 }
-            } catch (IllegalStateException e) {
-                // EOF
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-                break;
             }
-        }
+        });
     }
 
     public static List<Integer> findNewlines(byte[] memory, int start) {
