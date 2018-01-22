@@ -7,17 +7,9 @@ public class FroggingProgramAlign {
     public static void main(String[] args) throws Exception {
         byte[] reconstructionFileBytes = FroggingProgram.loadReconstructionFileBytes();
 
-        byte[] line1 = new byte[4 + 12];
-        System.arraycopy(reconstructionFileBytes, 16509 - ZX81SysVars.SAVE_START, line1,0, line1.length);
-
         byte[] originalFileBytes = FroggingProgram.loadFileBytes();
         originalFileBytes = BitUtils.ins(originalFileBytes, 8 * (ZX81SysVars.PRBUFF - ZX81SysVars.SAVE_START), false);
         originalFileBytes = BitUtils.ins(originalFileBytes, 8 * (ZX81SysVars.MEMBOT - ZX81SysVars.SAVE_START), false);
-
-        byte[] line1Original = new byte[4 + 12];
-        System.arraycopy(originalFileBytes, 16509 - ZX81SysVars.SAVE_START, line1Original,0, line1Original.length);
-
-        System.out.println(Arrays.toString(line1Original));
 
         AlignmentPair alignmentPair = AlignmentUtils.align(originalFileBytes, 16509 - ZX81SysVars.SAVE_START, 16, reconstructionFileBytes, 16509 - ZX81SysVars.SAVE_START, 16);
 
