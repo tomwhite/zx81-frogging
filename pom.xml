@@ -34,6 +34,7 @@
         <dependency>
             <artifactId>tapeutils</artifactId>
             <groupId>tapeutils</groupId>
+            <version>1.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/tapeutils.jar</systemPath>
         </dependency>

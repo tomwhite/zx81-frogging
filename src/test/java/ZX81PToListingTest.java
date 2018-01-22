@@ -1,3 +1,4 @@
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ public class ZX81PToListingTest {
     }
 
     @Test
+    @Ignore
     public void testPFileToListing() throws IOException {
         byte[] fileBytes = FroggingProgram.loadFileBytes();
 
