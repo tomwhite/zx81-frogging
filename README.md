@@ -1,13 +1,8 @@
-# ZX81 experiments
+# ZX81 Frogging
 
-The data stored for a program consists of the system variables and the program. Not all system variables are stored,
-only those starting at address 16393 (VERSN).
-
-```bash
-~/sw/zxtext2p/zxtext2p -o frogging-reconstruction.p frogging-reconstruction.bas
-```
-
-Then open the _.p_ file using [zxsp](https://www.macupdate.com/app/mac/24529/zxsp).
+My first computer was a [ZX81](https://en.wikipedia.org/wiki/ZX81), and the first game I wrote
+was called "Frogging", where you have to catch a frog on a lily pad that you can move
+left or right.
 
 ## Web emulator
 
@@ -32,3 +27,11 @@ and go to [http://localhost:8000/frogging.html](http://localhost:8000/frogging.h
 Type R followed by return to run the program, and use the 5 and 8 keys to move left and right.
 
 It's not the best game ever, but it's the first program I ever wrote (age 9), so it's not surprising.
+
+## Run locally
+
+```bash
+~/sw/zxtext2p/zxtext2p -o frogging-reconstruction.p frogging-reconstruction.bas
+```
+
+Then open the _.p_ file using [zxsp](https://www.macupdate.com/app/mac/24529/zxsp).
